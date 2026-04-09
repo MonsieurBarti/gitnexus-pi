@@ -67,7 +67,12 @@ async function runHandler(
 	}
 
 	// 3. Run analyze using the resolved binary path.
-	const result = await exec(binary, ["analyze"], { cwd: repoRoot, signal: ctx.signal });
+	//    --skip-agents-md: do not write AGENTS.md / CLAUDE.md / .claude/skills/ into the repo.
+	//    Only .gitnexus/ (the graph database) should be produced.
+	const result = await exec(binary, ["analyze", "--skip-agents-md"], {
+		cwd: repoRoot,
+		signal: ctx.signal,
+	});
 	if (result.killed) {
 		ctx.ui.notify(MESSAGES.indexingCancelled, "warning");
 		return;

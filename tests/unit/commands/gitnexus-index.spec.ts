@@ -49,7 +49,10 @@ describe("createGitNexusIndexCommand", () => {
 
 		expect(readFileSync(join(repo, ".gitignore"), "utf-8")).toBe(".gitnexus/\n");
 		expect(notifications[0].message).toBe(MESSAGES.gitignoreCreated);
-		expect(exec.calls[0]).toEqual({ cmd: "/bin/gitnexus", args: ["analyze"] });
+		expect(exec.calls[0]).toEqual({
+			cmd: "/bin/gitnexus",
+			args: ["analyze", "--skip-agents-md"],
+		});
 		expect(notifications.at(-1)?.message).toBe(MESSAGES.indexReady(repo));
 	});
 
