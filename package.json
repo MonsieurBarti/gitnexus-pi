@@ -11,6 +11,8 @@
 		"LICENSE"
 	],
 	"scripts": {
+		"clean": "rm -rf dist",
+		"prebuild": "rm -rf dist",
 		"build": "tsc -p tsconfig.build.json",
 		"test": "vitest run",
 		"test:watch": "vitest",
