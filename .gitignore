@@ -6,3 +6,6 @@ dist
 coverage
 docs/superpowers/
 docs/plans/
+.claude/
+AGENTS.md
+CLAUDE.md
