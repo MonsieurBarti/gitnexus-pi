@@ -1,6 +1,6 @@
 import { appendFileSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { GitignoreGuardError } from "./errors.ts";
+import { GitignoreGuardError } from "./errors";
 
 const VARIANTS = new Set([
 	".gitnexus",

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from "vitest";
-import { AugmentCache } from "../../src/augment-cache.ts";
+import { AugmentCache } from "../../src/augment-cache";
 
 describe("AugmentCache", () => {
 	let cache: AugmentCache;

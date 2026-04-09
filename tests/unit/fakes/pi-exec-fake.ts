@@ -1,4 +1,4 @@
-import type { PiExec, PiExecResult } from "../../../src/binary-resolver.ts";
+import type { PiExec, PiExecResult } from "../../../src/binary-resolver";
 
 export type FakePiExecScript = Array<{
 	match: (cmd: string, args: string[]) => boolean;

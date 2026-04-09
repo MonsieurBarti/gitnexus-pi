@@ -1,8 +1,8 @@
 import { EventEmitter } from "node:events";
 import { PassThrough } from "node:stream";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { McpClientError } from "../../src/errors.ts";
-import { GitNexusMcpClient, type SpawnFn } from "../../src/mcp-client.ts";
+import { McpClientError } from "../../src/errors";
+import { GitNexusMcpClient, type SpawnFn } from "../../src/mcp-client";
 
 type FakeChild = EventEmitter & {
 	stdin: PassThrough;

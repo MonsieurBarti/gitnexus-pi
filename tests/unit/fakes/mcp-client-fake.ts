@@ -1,4 +1,4 @@
-import type { McpContentItem } from "../../../src/mcp-client.ts";
+import type { McpContentItem } from "../../../src/mcp-client";
 
 export type FakeMcpClientScript = Array<{
 	match: (name: string, args: Record<string, unknown>) => boolean;

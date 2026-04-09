@@ -1,4 +1,4 @@
-import { BinaryNotFoundError } from "./errors.ts";
+import { BinaryNotFoundError } from "./errors";
 
 export type PiExecResult = {
 	stdout: string;

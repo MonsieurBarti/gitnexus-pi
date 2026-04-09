@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
-import { AugmentCache } from "../../../src/augment-cache.ts";
-import { createAugmentGrepHook } from "../../../src/hooks/augment-grep.ts";
-import { FakeMcpClient } from "../fakes/mcp-client-fake.ts";
+import { AugmentCache } from "../../../src/augment-cache";
+import { createAugmentGrepHook } from "../../../src/hooks/augment-grep";
+import { FakeMcpClient } from "../fakes/mcp-client-fake";
 
 function grepEvent(text: string, isError = false) {
 	return {

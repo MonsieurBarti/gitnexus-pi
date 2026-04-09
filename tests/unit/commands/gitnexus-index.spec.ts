@@ -2,10 +2,10 @@ import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "no
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import type { PiExec } from "../../../src/binary-resolver.ts";
-import { createGitNexusIndexCommand } from "../../../src/commands/gitnexus-index.ts";
-import { MESSAGES } from "../../../src/errors.ts";
-import { createFakePiExec } from "../fakes/pi-exec-fake.ts";
+import type { PiExec } from "../../../src/binary-resolver";
+import { createGitNexusIndexCommand } from "../../../src/commands/gitnexus-index";
+import { MESSAGES } from "../../../src/errors";
+import { createFakePiExec } from "../fakes/pi-exec-fake";
 
 type Notification = { message: string; level: string };
 

@@ -2,7 +2,7 @@ import { mkdirSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { findGitNexusRoot } from "../../src/repo-discovery.ts";
+import { findGitNexusRoot } from "../../src/repo-discovery";
 
 describe("findGitNexusRoot", () => {
 	let base: string;

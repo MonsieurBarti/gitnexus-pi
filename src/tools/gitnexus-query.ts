@@ -1,6 +1,6 @@
 import { Type } from "@sinclair/typebox";
-import { MESSAGES } from "../errors.ts";
-import type { GitNexusMcpClient, McpContentItem } from "../mcp-client.ts";
+import { MESSAGES } from "../errors";
+import type { GitNexusMcpClient, McpContentItem } from "../mcp-client";
 
 /**
  * Minimal structural type matching the PI extension tool shape that we consume.

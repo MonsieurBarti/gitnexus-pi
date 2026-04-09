@@ -1,6 +1,6 @@
 import { basename } from "node:path";
-import type { AugmentCache } from "../augment-cache.ts";
-import type { GitNexusMcpClient, McpContentItem } from "../mcp-client.ts";
+import type { AugmentCache } from "../augment-cache";
+import type { GitNexusMcpClient, McpContentItem } from "../mcp-client";
 
 type ToolResultEvent = {
 	name: string;

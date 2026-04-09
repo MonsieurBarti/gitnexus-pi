@@ -1,11 +1,11 @@
-import { AugmentCache } from "./augment-cache.ts";
-import type { PiExec } from "./binary-resolver.ts";
-import { resolveBinary } from "./binary-resolver.ts";
-import { createGitNexusIndexCommand } from "./commands/gitnexus-index.ts";
-import { BinaryNotFoundError, MESSAGES } from "./errors.ts";
-import { createAugmentGrepHook } from "./hooks/augment-grep.ts";
-import { GitNexusMcpClient } from "./mcp-client.ts";
-import { createGitNexusQueryTool } from "./tools/gitnexus-query.ts";
+import { AugmentCache } from "./augment-cache";
+import type { PiExec } from "./binary-resolver";
+import { resolveBinary } from "./binary-resolver";
+import { createGitNexusIndexCommand } from "./commands/gitnexus-index";
+import { BinaryNotFoundError, MESSAGES } from "./errors";
+import { createAugmentGrepHook } from "./hooks/augment-grep";
+import { GitNexusMcpClient } from "./mcp-client";
+import { createGitNexusQueryTool } from "./tools/gitnexus-query";
 
 /**
  * Structural type for the subset of `ExtensionAPI` we consume.

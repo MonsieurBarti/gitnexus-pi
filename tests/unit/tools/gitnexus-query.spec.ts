@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
-import { McpClientError } from "../../../src/errors.ts";
-import { createGitNexusQueryTool } from "../../../src/tools/gitnexus-query.ts";
-import { FakeMcpClient } from "../fakes/mcp-client-fake.ts";
+import { McpClientError } from "../../../src/errors";
+import { createGitNexusQueryTool } from "../../../src/tools/gitnexus-query";
+import { FakeMcpClient } from "../fakes/mcp-client-fake";
 
 const TOOL_CALL_ID = "tc-1";
 

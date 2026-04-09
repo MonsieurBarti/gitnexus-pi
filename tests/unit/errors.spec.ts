@@ -5,7 +5,7 @@ import {
 	INSTALL_HINT,
 	MESSAGES,
 	McpClientError,
-} from "../../src/errors.ts";
+} from "../../src/errors";
 
 describe("errors", () => {
 	describe("BinaryNotFoundError", () => {

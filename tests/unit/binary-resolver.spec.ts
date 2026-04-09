@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
-import { resolveBinary } from "../../src/binary-resolver.ts";
-import { BinaryNotFoundError } from "../../src/errors.ts";
-import { createFakePiExec } from "./fakes/pi-exec-fake.ts";
+import { resolveBinary } from "../../src/binary-resolver";
+import { BinaryNotFoundError } from "../../src/errors";
+import { createFakePiExec } from "./fakes/pi-exec-fake";
 
 describe("resolveBinary", () => {
 	test("returns GITNEXUS_PATH when set and file is executable", async () => {

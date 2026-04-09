@@ -2,8 +2,8 @@ import { chmodSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "nod
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { GitignoreGuardError } from "../../src/errors.ts";
-import { ensureGitnexusIgnored } from "../../src/gitignore-guard.ts";
+import { GitignoreGuardError } from "../../src/errors";
+import { ensureGitnexusIgnored } from "../../src/gitignore-guard";
 
 describe("ensureGitnexusIgnored", () => {
 	let repo: string;

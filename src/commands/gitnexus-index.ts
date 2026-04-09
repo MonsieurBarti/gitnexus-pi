@@ -1,6 +1,6 @@
-import type { PiExec } from "../binary-resolver.ts";
-import { GitignoreGuardError, MESSAGES } from "../errors.ts";
-import { ensureGitnexusIgnored } from "../gitignore-guard.ts";
+import type { PiExec } from "../binary-resolver";
+import { GitignoreGuardError, MESSAGES } from "../errors";
+import { ensureGitnexusIgnored } from "../gitignore-guard";
 
 type CommandCtx = {
 	cwd: string;
