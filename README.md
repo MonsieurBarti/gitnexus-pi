@@ -1,10 +1,10 @@
 <div align="center">
   <img src="https://raw.githubusercontent.com/MonsieurBarti/The-Forge-Flow-CC/refs/heads/main/assets/forge-banner.png" alt="The Forge Flow" width="100%">
   
-  <h1>🔧 GitNexus PI Extension Template</h1>
+  <h1>🔧 @the-forge-flow/gitnexus-pi</h1>
   
   <p>
-    <strong>Starter kit for building PI coding agent extensions</strong>
+    <strong>Native GitNexus code-intelligence for the PI coding agent</strong>
   </p>
   
   <p>
