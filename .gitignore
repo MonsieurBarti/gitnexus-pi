@@ -4,3 +4,5 @@ dist
 .worktrees/
 .gitnexus/
 coverage
+docs/superpowers/
+docs/plans/
