@@ -25,6 +25,7 @@ export function createAugmentGrepHook(
 ): (event: ToolResultEvent) => Promise<ToolResultPatch | undefined> {
 	return async (event) => {
 		if (event.name !== "grep" || event.isError) return undefined;
+		if (!Array.isArray(event.content)) return undefined;
 		const client = clientAccessor();
 		if (!client) return undefined;
 
