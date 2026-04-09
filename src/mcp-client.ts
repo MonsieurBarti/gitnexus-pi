@@ -218,6 +218,9 @@ export class GitNexusMcpClient {
 		this._dead = true;
 		const wrapped = new McpClientError("gitnexus mcp child errored", err);
 		for (const [, pending] of this.pending) {
+			if (pending.signal && pending.signalListener) {
+				pending.signal.removeEventListener("abort", pending.signalListener);
+			}
 			pending.reject(wrapped);
 		}
 		this.pending.clear();
