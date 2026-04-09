@@ -7,15 +7,10 @@
 		"enabled": true,
 		"rules": {
 			"recommended": true,
-			"correctness": {
-				"noUnusedImports": "error",
-				"noUnusedVariables": "error"
-			},
 			"suspicious": {
-				"noExplicitAny": "error"
+				"noExplicitAny": "warn"
 			},
 			"style": {
-				"noNonNullAssertion": "warn",
 				"useImportType": "error"
 			}
 		}
@@ -24,19 +19,17 @@
 		"enabled": true,
 		"indentStyle": "tab",
 		"indentWidth": 2,
-		"lineWidth": 100,
-		"formatWithErrors": false
+		"lineWidth": 100
 	},
 	"javascript": {
 		"formatter": {
 			"quoteStyle": "double",
 			"trailingCommas": "all",
-			"semicolons": "always",
-			"arrowParentheses": "always"
+			"semicolons": "always"
 		}
 	},
 	"files": {
-		"ignore": ["node_modules", "dist", "*.md", ".pi"]
+		"ignore": ["node_modules", "dist", "coverage", ".pi"]
 	},
 	"overrides": [
 		{

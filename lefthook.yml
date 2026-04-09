@@ -6,7 +6,7 @@ commit-msg:
 pre-commit:
   parallel: true
   commands:
-    biome:
-      run: bun run lint
+    biome-check:
+      run: bun run check
     test:
       run: bun test
