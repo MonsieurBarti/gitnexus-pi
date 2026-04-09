@@ -53,12 +53,12 @@
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/monsieurbarti/gitnexus-pi.git"
+		"url": "git+https://github.com/MonsieurBarti/gitnexus-pi.git"
 	},
 	"bugs": {
-		"url": "https://github.com/monsieurbarti/gitnexus-pi/issues"
+		"url": "https://github.com/MonsieurBarti/gitnexus-pi/issues"
 	},
-	"homepage": "https://github.com/monsieurbarti/gitnexus-pi#readme",
+	"homepage": "https://github.com/MonsieurBarti/gitnexus-pi#readme",
 	"publishConfig": {
 		"access": "public"
 	},
