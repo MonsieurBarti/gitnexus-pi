@@ -38,7 +38,7 @@ describe("createGitNexusIndexCommand", () => {
 	test("creates .gitignore then runs gitnexus analyze on success", async () => {
 		const exec = createFakePiExec([
 			{
-				match: (cmd, args) => cmd === "gitnexus" && args[0] === "analyze",
+				match: (cmd, args) => args[0] === "analyze",
 				result: { stdout: "indexed 123 symbols", stderr: "", code: 0 },
 			},
 		]);
@@ -49,7 +49,7 @@ describe("createGitNexusIndexCommand", () => {
 
 		expect(readFileSync(join(repo, ".gitignore"), "utf-8")).toBe(".gitnexus/\n");
 		expect(notifications[0].message).toBe(MESSAGES.gitignoreCreated);
-		expect(exec.calls[0]).toEqual({ cmd: "gitnexus", args: ["analyze"] });
+		expect(exec.calls[0]).toEqual({ cmd: "/bin/gitnexus", args: ["analyze"] });
 		expect(notifications.at(-1)?.message).toBe(MESSAGES.indexReady(repo));
 	});
 
@@ -84,7 +84,7 @@ describe("createGitNexusIndexCommand", () => {
 	test("notifies with stderr tail on non-zero exit", async () => {
 		const exec = createFakePiExec([
 			{
-				match: (cmd) => cmd === "gitnexus",
+				match: (cmd, args) => args[0] === "analyze",
 				result: { stdout: "", stderr: "boom: segfault", code: 1 },
 			},
 		]);
@@ -99,7 +99,7 @@ describe("createGitNexusIndexCommand", () => {
 	test("notifies cancelled on abort (killed=true)", async () => {
 		const exec = createFakePiExec([
 			{
-				match: (cmd) => cmd === "gitnexus",
+				match: (cmd, args) => args[0] === "analyze",
 				result: { stdout: "", stderr: "", code: 0, killed: true },
 			},
 		]);
@@ -116,7 +116,7 @@ describe("createGitNexusIndexCommand", () => {
 		try {
 			const exec = createFakePiExec([
 				{
-					match: (cmd) => cmd === "gitnexus",
+					match: (cmd, args) => args[0] === "analyze",
 					result: { stdout: "", stderr: "", code: 0 },
 				},
 			]);
@@ -148,7 +148,7 @@ describe("createGitNexusIndexCommand", () => {
 		let gitignoreExistedBeforeExec = false;
 		const baseExec = createFakePiExec([
 			{
-				match: (cmd) => cmd === "gitnexus",
+				match: (cmd, args) => args[0] === "analyze",
 				result: { stdout: "", stderr: "", code: 0 },
 			},
 		]);

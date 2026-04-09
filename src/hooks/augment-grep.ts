@@ -3,7 +3,7 @@ import type { AugmentCache } from "../augment-cache";
 import type { GitNexusMcpClient, McpContentItem } from "../mcp-client";
 
 type ToolResultEvent = {
-	name: string;
+	toolName: string;
 	isError: boolean;
 	content: McpContentItem[];
 };
@@ -24,7 +24,7 @@ export function createAugmentGrepHook(
 	cache: AugmentCache,
 ): (event: ToolResultEvent) => Promise<ToolResultPatch | undefined> {
 	return async (event) => {
-		if (event.name !== "grep" || event.isError) return undefined;
+		if (event.toolName !== "grep" || event.isError) return undefined;
 		if (!Array.isArray(event.content)) return undefined;
 		const client = clientAccessor();
 		if (!client) return undefined;

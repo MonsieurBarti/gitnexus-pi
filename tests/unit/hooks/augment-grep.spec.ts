@@ -5,7 +5,7 @@ import { FakeMcpClient } from "../fakes/mcp-client-fake";
 
 function grepEvent(text: string, isError = false) {
 	return {
-		name: "grep",
+		toolName: "grep",
 		isError,
 		content: [{ type: "text", text }],
 	};
@@ -14,7 +14,7 @@ function grepEvent(text: string, isError = false) {
 describe("createAugmentGrepHook", () => {
 	test("returns undefined for non-grep events", async () => {
 		const hook = createAugmentGrepHook(() => new FakeMcpClient(), new AugmentCache());
-		const result = await hook({ name: "read", isError: false, content: [] });
+		const result = await hook({ toolName: "read", isError: false, content: [] });
 		expect(result).toBeUndefined();
 	});
 

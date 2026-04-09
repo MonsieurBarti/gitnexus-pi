@@ -5,7 +5,7 @@ import { ensureGitnexusIgnored } from "../gitignore-guard";
 type CommandCtx = {
 	cwd: string;
 	signal?: AbortSignal;
-	ui: { notify: (message: string, level: "info" | "warn" | "error") => void };
+	ui: { notify: (message: string, level: "info" | "warning" | "error") => void };
 };
 
 export type CommandDefinition = {
@@ -66,10 +66,10 @@ async function runHandler(
 		return;
 	}
 
-	// 3. Run analyze.
-	const result = await exec("gitnexus", ["analyze"], { cwd: repoRoot, signal: ctx.signal });
+	// 3. Run analyze using the resolved binary path.
+	const result = await exec(binary, ["analyze"], { cwd: repoRoot, signal: ctx.signal });
 	if (result.killed) {
-		ctx.ui.notify(MESSAGES.indexingCancelled, "warn");
+		ctx.ui.notify(MESSAGES.indexingCancelled, "warning");
 		return;
 	}
 	if (result.code !== 0) {

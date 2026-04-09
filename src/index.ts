@@ -28,7 +28,7 @@ export default function gitnexusExtension(pi: ExtensionAPI): void {
 	pi.on("session_start", async (...evArgs: unknown[]) => {
 		const ctx = evArgs[1] as {
 			cwd: string;
-			ui: { notify: (msg: string, level: "info" | "warn" | "error") => void };
+			ui: { notify: (msg: string, level: "info" | "warning" | "error") => void };
 		};
 		try {
 			binaryPath = await resolveBinary(pi.exec.bind(pi) as PiExec, process.env);
@@ -37,10 +37,10 @@ export default function gitnexusExtension(pi: ExtensionAPI): void {
 			ctx.ui.notify(MESSAGES.extensionReady(binaryPath), "info");
 		} catch (err) {
 			if (err instanceof BinaryNotFoundError) {
-				ctx.ui.notify(MESSAGES.binaryNotFound, "warn");
+				ctx.ui.notify(MESSAGES.binaryNotFound, "warning");
 			} else {
 				const msg = err instanceof Error ? err.message : String(err);
-				ctx.ui.notify(MESSAGES.initFailed(msg), "warn");
+				ctx.ui.notify(MESSAGES.initFailed(msg), "warning");
 			}
 			client = null;
 		}
