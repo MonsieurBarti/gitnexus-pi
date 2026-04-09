@@ -29,7 +29,7 @@
 		}
 	},
 	"files": {
-		"ignore": ["node_modules", "dist", "coverage", ".pi", ".github/**/*.yml"]
+		"ignore": ["node_modules", "dist", "coverage", ".pi", ".gitnexus", ".github/**/*.yml"]
 	},
 	"overrides": [
 		{
