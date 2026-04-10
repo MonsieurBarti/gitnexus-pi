@@ -1,0 +1,23 @@
+import { Type } from "@sinclair/typebox";
+import { MESSAGES } from "../errors";
+import type { GitNexusMcpClient, McpContentItem } from "../mcp-client";
+import type { ToolDefinition } from "./gitnexus-query";
+
+type ClientAccessor = () => Pick<GitNexusMcpClient, "callTool"> | null;
+
+export function createGitNexusListReposTool(client: ClientAccessor): ToolDefinition {
+	return {
+		name: "tff-gitnexus_list_repos",
+		label: "GitNexus List Repos",
+		description: "List all repositories that have been indexed by GitNexus.",
+		parameters: Type.Object({}),
+		async execute(_toolCallId, _params, signal, _onUpdate, _ctx) {
+			const current = client();
+			if (!current) {
+				throw new Error(MESSAGES.clientNotAvailable);
+			}
+			const content = await current.callTool("list_repos", {}, signal);
+			return { content, details: {} };
+		},
+	};
+}
