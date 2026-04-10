@@ -224,4 +224,43 @@ describe("GitNexusMcpClient", () => {
 		await client.close();
 		expect(fake.child.killed).toBe(true);
 	});
+
+	test("onError cleans up abort listeners on pending calls", async () => {
+		const startPromise = client.start();
+		await flush();
+		pushMessage(fake.child, { jsonrpc: "2.0", id: 1, result: {} });
+		await startPromise;
+
+		const controller = new AbortController();
+		const callPromise = client.callTool("query", { query: "test" }, controller.signal);
+		await flush();
+
+		// Simulate a child process error
+		fake.child.emit("error", new Error("spawn ENOENT"));
+
+		await expect(callPromise).rejects.toThrow("gitnexus mcp child errored");
+		expect(client.dead).toBe(true);
+
+		// After rejection, aborting should be a no-op (listener was cleaned up)
+		controller.abort();
+	});
+
+	test("onExit removes abort signal listeners from pending calls", async () => {
+		const startPromise = client.start();
+		await flush();
+		pushMessage(fake.child, { jsonrpc: "2.0", id: 1, result: {} });
+		await startPromise;
+
+		const controller = new AbortController();
+		const callPromise = client.callTool("query", { query: "test" }, controller.signal);
+		await flush();
+
+		// Simulate unexpected exit
+		fake.child.emit("exit", 1, null);
+
+		await expect(callPromise).rejects.toThrow("exited unexpectedly");
+
+		// After rejection, aborting should be a no-op (listener was removed)
+		controller.abort();
+	});
 });

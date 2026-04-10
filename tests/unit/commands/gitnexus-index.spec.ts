@@ -147,6 +147,21 @@ describe("createGitNexusIndexCommand", () => {
 		expect(notifications.some((n) => n.level === "error")).toBe(true);
 	});
 
+	test("notifies generic error when ensureGitnexusIgnored throws non-GitignoreGuardError", async () => {
+		// Create a scenario where ensureGitnexusIgnored throws a non-GitignoreGuardError.
+		// Writing a file at the path that ensureGitnexusIgnored expects to be a directory
+		// will cause a non-GitignoreGuardError when it tries to stat/write.
+		const invalidPath = join(repo, "not-a-dir");
+		writeFileSync(invalidPath, "data");
+		const exec = createFakePiExec([]);
+		const cmd = createGitNexusIndexCommand(exec, () => "/bin/gitnexus");
+		const { ctx, notifications } = createFakeCtx(join(invalidPath, "sub"));
+		// biome-ignore lint/suspicious/noExplicitAny: test-only ctx shape
+		await cmd.handler("", ctx as any);
+		expect(notifications.some((n) => n.level === "error")).toBe(true);
+		expect(exec.calls).toHaveLength(0);
+	});
+
 	test("performs gitignore guard BEFORE exec'ing gitnexus", async () => {
 		let gitignoreExistedBeforeExec = false;
 		const baseExec = createFakePiExec([
