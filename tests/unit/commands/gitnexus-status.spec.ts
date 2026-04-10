@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { AugmentCache } from "../../../src/augment-cache";
 import { createGitNexusStatusCommand } from "../../../src/commands/gitnexus-status";
+import type { McpContentItem } from "../../../src/mcp-client";
 import { createFakeResolveRepo } from "../fakes/resolve-repo-fake";
 
 type Notification = { message: string; level: string };
@@ -25,8 +26,8 @@ function createFullDeps(
 	return {
 		binaryPath: () => "/usr/bin/gitnexus" as string | null,
 		client: () =>
-			({ callTool: async () => [], dead: false }) as {
-				callTool: (...args: unknown[]) => Promise<unknown[]>;
+			({ callTool: async () => [] as McpContentItem[], dead: false }) as {
+				callTool: (...args: unknown[]) => Promise<McpContentItem[]>;
 				dead: boolean;
 			} | null,
 		augmentEnabled: () => true,
