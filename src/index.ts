@@ -1,180 +1,122 @@
-/**
- * GitNexus PI Extension Template
- *
- * A starter kit for building PI coding agent extensions following
- * The Forge Flow conventions.
- */
+import { statSync } from "node:fs";
+import { join } from "node:path";
+import { AugmentCache } from "./augment-cache";
+import type { PiExec } from "./binary-resolver";
+import { resolveBinary } from "./binary-resolver";
+import { createGitNexusIndexCommand } from "./commands/gitnexus-index";
+import { createGitNexusStatusCommand } from "./commands/gitnexus-status";
+import { BinaryNotFoundError, MESSAGES } from "./errors";
+import { createAugmentGrepHook } from "./hooks/augment-grep";
+import { GitNexusMcpClient } from "./mcp-client";
+import { resolveRepoRoot } from "./repo-resolver";
+import { createGitNexusContextTool } from "./tools/gitnexus-context";
+import { createGitNexusCypherTool } from "./tools/gitnexus-cypher";
+import { createGitNexusDetectChangesTool } from "./tools/gitnexus-detect-changes";
+import { createGitNexusImpactTool } from "./tools/gitnexus-impact";
+import { createGitNexusListReposTool } from "./tools/gitnexus-list-repos";
+import { createGitNexusQueryTool } from "./tools/gitnexus-query";
 
-import { StringEnum } from "@mariozechner/pi-ai";
-import {
-	type ExtensionAPI,
-	type ExtensionContext,
-	defineTool,
-} from "@mariozechner/pi-coding-agent";
-import { Type } from "@sinclair/typebox";
-import type { ExtensionState } from "./types.js";
-
-// Extension state (persisted in tool result details)
-let state: ExtensionState = {
-	initialized: false,
-	config: {
-		enabled: true,
-	},
+type ExtensionAPI = {
+	exec: PiExec;
+	on: (event: string, handler: (...args: unknown[]) => unknown) => void;
+	registerTool: (tool: unknown) => void;
+	registerCommand: (name: string, opts: unknown) => void;
 };
 
-/**
- * Reconstruct state from session history
- */
-function reconstructState(_sessionManager: ExtensionContext["sessionManager"]): void {
-	// Reset to defaults
-	state = {
-		initialized: false,
-		config: {
-			enabled: true,
-		},
-	};
-
-	// TODO: Reconstruct from tool result details if needed
-	// for (const entry of sessionManager.getBranch()) {
-	//   if (entry.type === "message" && entry.message.role === "toolResult") {
-	//     if (entry.message.toolName === "gitnexus-example") {
-	//       state = entry.message.details ?? state;
-	//     }
-	//   }
-	// }
-
-	state.initialized = true;
+function hasGitDir(cwd: string): boolean {
+	try {
+		return statSync(join(cwd, ".git")).isDirectory();
+	} catch {
+		return false;
+	}
 }
 
-/**
- * GitNexus PI Extension Entry Point
- */
 export default function gitnexusExtension(pi: ExtensionAPI): void {
-	// Session lifecycle: initialize on start
-	pi.on("session_start", async (_event, ctx) => {
-		reconstructState(ctx.sessionManager);
-		if (ctx.hasUI) {
-			ctx.ui.notify("GitNexus extension ready", "info");
+	let client: GitNexusMcpClient | null = null;
+	let binaryPath: string | null = null;
+	let augmentEnabled = true;
+	const cache = new AugmentCache();
+
+	const clientAccessor = () => client;
+	// DI seam: wrapping resolveRepoRoot lets tests inject a fake resolver
+	// into tool/command factories without touching the real module.
+	const resolveRepo = (ctx: { cwd: string }, override?: string) => resolveRepoRoot(ctx, override);
+
+	pi.on("session_start", async (...evArgs: unknown[]) => {
+		const ctx = evArgs[1] as {
+			cwd: string;
+			ui: { notify: (msg: string, level: "info" | "warning" | "error") => void };
+		};
+		try {
+			binaryPath = await resolveBinary(pi.exec.bind(pi) as PiExec, process.env);
+			client = new GitNexusMcpClient(binaryPath, ctx.cwd);
+			await client.start();
+			ctx.ui.notify(MESSAGES.extensionReady(binaryPath), "info");
+
+			const maybeRepo = resolveRepoRoot({ cwd: ctx.cwd });
+			if (maybeRepo === null && hasGitDir(ctx.cwd)) {
+				ctx.ui.notify(MESSAGES.indexMissing, "info");
+			}
+		} catch (err) {
+			if (err instanceof BinaryNotFoundError) {
+				ctx.ui.notify(MESSAGES.binaryNotFound, "warning");
+			} else {
+				const msg = err instanceof Error ? err.message : String(err);
+				ctx.ui.notify(MESSAGES.initFailed(msg), "warning");
+			}
+			client = null;
 		}
 	});
 
-	// Session lifecycle: cleanup on shutdown
 	pi.on("session_shutdown", async () => {
-		// Cleanup any resources here
+		await client?.close();
+		client = null;
+		cache.clear();
 	});
 
-	// Register example tool
-	pi.registerTool(
-		defineTool({
-			name: "gitnexus-example",
-			label: "GitNexus Example Tool",
-			description:
-				"Example tool for the GitNexus extension template. Demonstrates the standard pattern for GitNexus tools.",
-			parameters: Type.Object({
-				action: StringEnum(["list", "create", "delete"] as const, {
-					description: "Action to perform",
-				}),
-				input: Type.Optional(
-					Type.String({
-						description: "Input value for the action",
-					}),
-				),
-			}),
-			async execute(_toolCallId, params, signal, _onUpdate, _ctx) {
-				// Check for cancellation
-				if (signal?.aborted) {
-					return {
-						content: [{ type: "text", text: "Operation cancelled" }],
-						details: { action: params.action, cancelled: true },
-					};
-				}
+	// Tools
+	pi.registerTool(createGitNexusQueryTool(clientAccessor, resolveRepo));
+	pi.registerTool(createGitNexusContextTool(clientAccessor, resolveRepo));
+	pi.registerTool(createGitNexusImpactTool(clientAccessor, resolveRepo));
+	pi.registerTool(createGitNexusCypherTool(clientAccessor, resolveRepo));
+	pi.registerTool(createGitNexusDetectChangesTool(clientAccessor, resolveRepo));
+	pi.registerTool(createGitNexusListReposTool(clientAccessor));
 
-				// Handle actions
-				switch (params.action) {
-					case "list":
-						return {
-							content: [
-								{
-									type: "text",
-									text: "GitNexus Example Tool - List action\n\nNo items to list yet.",
-								},
-							],
-							details: { action: "list", items: [] },
-						};
-
-					case "create":
-						if (!params.input) {
-							return {
-								content: [
-									{
-										type: "text",
-										text: "Error: 'input' parameter required for 'create' action",
-									},
-								],
-								details: { action: "create", error: "input required" },
-								isError: true,
-							};
-						}
-						return {
-							content: [
-								{
-									type: "text",
-									text: `Created: ${params.input}`,
-								},
-							],
-							details: { action: "create", created: params.input },
-						};
-
-					case "delete":
-						return {
-							content: [
-								{
-									type: "text",
-									text: "Delete action - not implemented in template",
-								},
-							],
-							details: { action: "delete" },
-						};
-
-					default: {
-						// TypeScript exhaustiveness check
-						const _exhaustive: never = params.action;
-						return {
-							content: [
-								{
-									type: "text",
-									text: `Unknown action: ${String(_exhaustive)}`,
-								},
-							],
-							details: { action: "unknown" },
-							isError: true,
-						};
-					}
-				}
-			},
+	// Commands
+	pi.registerCommand(
+		"gitnexus-index",
+		createGitNexusIndexCommand(pi.exec.bind(pi) as PiExec, () => binaryPath),
+	);
+	pi.registerCommand(
+		"gitnexus-status",
+		createGitNexusStatusCommand({
+			binaryPath: () => binaryPath,
+			client: () => client,
+			augmentEnabled: () => augmentEnabled,
+			cache,
+			resolveRepo,
 		}),
 	);
-
-	// Register example command
-	pi.registerCommand("gitnexus-status", {
-		description: "Show GitNexus extension status",
-		handler: async (_args, ctx) => {
-			const status = state.config.enabled ? "enabled" : "disabled";
-			if (ctx.hasUI) {
-				ctx.ui.notify(`GitNexus extension is ${status}`, "info");
+	pi.registerCommand("gitnexus-toggle-augment", {
+		description: "Toggle the GitNexus auto-augment hook on/off for this session",
+		handler: async (
+			_args: string,
+			ctx: { ui: { notify: (msg: string, level: string) => void } },
+		) => {
+			try {
+				augmentEnabled = !augmentEnabled;
+				ctx.ui.notify(augmentEnabled ? MESSAGES.augmentOn : MESSAGES.augmentOff, "info");
+			} catch (err) {
+				const msg = err instanceof Error ? err.message : String(err);
+				ctx.ui.notify(MESSAGES.toggleFailed(msg), "error");
 			}
 		},
 	});
 
-	// Register toggle command
-	pi.registerCommand("gitnexus-toggle", {
-		description: "Toggle GitNexus extension on/off",
-		handler: async (_args, ctx) => {
-			state.config.enabled = !state.config.enabled;
-			const status = state.config.enabled ? "enabled" : "disabled";
-			if (ctx.hasUI) {
-				ctx.ui.notify(`GitNexus extension ${status}`, "info");
-			}
-		},
+	// Hook
+	const augmentHook = createAugmentGrepHook(clientAccessor, cache, () => augmentEnabled);
+	pi.on("tool_result", (...evArgs: unknown[]) => {
+		const event = evArgs[0] as Parameters<typeof augmentHook>[0];
+		return augmentHook(event);
 	});
 }
