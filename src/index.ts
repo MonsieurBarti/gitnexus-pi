@@ -5,6 +5,7 @@ import { createGitNexusIndexCommand } from "./commands/gitnexus-index";
 import { BinaryNotFoundError, MESSAGES } from "./errors";
 import { createAugmentGrepHook } from "./hooks/augment-grep";
 import { GitNexusMcpClient } from "./mcp-client";
+import { resolveRepoRoot } from "./repo-resolver";
 import { createGitNexusQueryTool } from "./tools/gitnexus-query";
 
 /**
@@ -52,7 +53,7 @@ export default function gitnexusExtension(pi: ExtensionAPI): void {
 		cache.clear();
 	});
 
-	pi.registerTool(createGitNexusQueryTool(() => client));
+	pi.registerTool(createGitNexusQueryTool(() => client, resolveRepoRoot));
 	pi.registerCommand(
 		"gitnexus-index",
 		createGitNexusIndexCommand(pi.exec.bind(pi) as PiExec, () => binaryPath),
