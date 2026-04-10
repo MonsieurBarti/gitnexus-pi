@@ -59,7 +59,11 @@ export default function gitnexusExtension(pi: ExtensionAPI): void {
 		createGitNexusIndexCommand(pi.exec.bind(pi) as PiExec, () => binaryPath),
 	);
 
-	const augmentHook = createAugmentGrepHook(() => client, cache);
+	const augmentHook = createAugmentGrepHook(
+		() => client,
+		cache,
+		() => true,
+	);
 	pi.on("tool_result", (...evArgs: unknown[]) => {
 		const event = evArgs[0] as Parameters<typeof augmentHook>[0];
 		return augmentHook(event);
