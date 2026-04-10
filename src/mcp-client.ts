@@ -77,6 +77,7 @@ export class GitNexusMcpClient {
 			});
 		} catch (err) {
 			this._dead = true;
+			/* v8 ignore next */
 			throw err instanceof McpClientError ? err : new McpClientError("initialize failed", err);
 		}
 

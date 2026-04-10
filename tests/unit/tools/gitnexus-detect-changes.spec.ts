@@ -70,6 +70,13 @@ describe("createGitNexusDetectChangesTool", () => {
 		);
 	});
 
+	test("throws clientNotAvailable when client is null", async () => {
+		const tool = createGitNexusDetectChangesTool(() => null, createFakeResolveRepo("/repo"));
+		await expect(tool.execute(TOOL_CALL_ID, {}, undefined, undefined, CTX)).rejects.toThrow(
+			MESSAGES.clientNotAvailable,
+		);
+	});
+
 	test("re-throws upstream errors", async () => {
 		const client = new FakeMcpClient([{ match: () => true, result: new McpClientError("boom") }]);
 		const tool = createGitNexusDetectChangesTool(() => client, createFakeResolveRepo("/repo"));

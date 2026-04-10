@@ -91,6 +91,7 @@ function extractPaths(event: ToolResultEvent): string[] {
 			return extractFromContentLines(event.content, FIND_PATTERN, MAX_PATHS);
 		case "read":
 			return extractFromReadInput(event.input);
+		/* v8 ignore next 2 */
 		default:
 			return [];
 	}

@@ -133,4 +133,19 @@ describe("createGitNexusStatusCommand", () => {
 		await expect(cmd.handler("", ctx as any)).resolves.toBeUndefined();
 		expect(notifications.some((n) => n.level === "error")).toBe(true);
 	});
+
+	test("catch branch uses String(err) for non-Error thrown values", async () => {
+		const deps = createFullDeps({
+			binaryPath: () => {
+				throw "string-thrown-value";
+			},
+		});
+		const cmd = createGitNexusStatusCommand(deps);
+		const { ctx, notifications } = createFakeCtx();
+		// biome-ignore lint/suspicious/noExplicitAny: test-only ctx shape
+		await cmd.handler("", ctx as any);
+		expect(
+			notifications.some((n) => n.level === "error" && n.message.includes("string-thrown-value")),
+		).toBe(true);
+	});
 });

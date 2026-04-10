@@ -81,6 +81,13 @@ describe("createGitNexusContextTool", () => {
 		);
 	});
 
+	test("throws clientNotAvailable when client is null", async () => {
+		const tool = createGitNexusContextTool(() => null, createFakeResolveRepo("/repo"));
+		await expect(
+			tool.execute(TOOL_CALL_ID, { name: "fn" }, undefined, undefined, CTX),
+		).rejects.toThrow(MESSAGES.clientNotAvailable);
+	});
+
 	test("throws noIndexFound when resolver returns null", async () => {
 		const client = new FakeMcpClient([
 			{ match: () => true, result: [{ type: "text", text: "ok" }] },

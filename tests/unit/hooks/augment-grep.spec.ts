@@ -294,6 +294,103 @@ describe("createAugmentGrepHook", () => {
 		expect(cache.failures).toBe(1);
 	});
 
+	test("returns undefined when event.content is not an array", async () => {
+		const hook = createAugmentGrepHook(
+			() => new FakeMcpClient(),
+			new AugmentCache(),
+			() => true,
+		);
+		const result = await hook({
+			toolName: "grep",
+			isError: false,
+			content: "not-an-array" as unknown as { type: string; text?: string }[],
+			input: {},
+		});
+		expect(result).toBeUndefined();
+	});
+
+	test("content item with non-string text is treated as empty", async () => {
+		const cache = new AugmentCache();
+		const client = new FakeMcpClient([
+			{
+				match: (name) => name === "query",
+				result: [{ type: "image", data: 42 } as unknown as { type: string; text?: string }],
+			},
+		]);
+		const hook = createAugmentGrepHook(
+			() => client,
+			cache,
+			() => true,
+		);
+		// The callTool returns content where text is not a string → treated as empty → failure
+		const result = await hook(grepEvent("foo.ts:1:match"));
+		expect(result).toBeUndefined();
+		expect(cache.failures).toBe(1);
+	});
+
+	test("extractFromContentLines skips items with non-string text", async () => {
+		const cache = new AugmentCache();
+		const client = new FakeMcpClient([
+			{
+				match: () => true,
+				result: [{ type: "text", text: "context info" }],
+			},
+		]);
+		const hook = createAugmentGrepHook(
+			() => client,
+			cache,
+			() => true,
+		);
+		// Event with a content item that has no text (non-string) followed by one with text
+		const result = await hook({
+			toolName: "grep",
+			isError: false,
+			content: [
+				{ type: "image" } as unknown as { type: string; text?: string },
+				{ type: "text", text: "bar.ts:1:match" },
+			],
+			input: {},
+		});
+		expect(result?.content).toHaveLength(3); // 2 original + 1 augment
+		expect(cache.has("bar.ts")).toBe(true);
+	});
+
+	test("extractFromContentLines deduplicates paths", async () => {
+		const cache = new AugmentCache();
+		const client = new FakeMcpClient([
+			{
+				match: () => true,
+				result: [{ type: "text", text: "context info" }],
+			},
+		]);
+		const hook = createAugmentGrepHook(
+			() => client,
+			cache,
+			() => true,
+		);
+		// Same file appears multiple times — should be deduplicated
+		const event = grepEvent("foo.ts:1:match\nfoo.ts:2:another\nfoo.ts:3:third");
+		const result = await hook(event);
+		expect(client.calls.length).toBe(1); // only one unique path
+		expect(result?.content).toHaveLength(2);
+	});
+
+	test("read event with empty path returns undefined", async () => {
+		const cache = new AugmentCache();
+		const hook = createAugmentGrepHook(
+			() => new FakeMcpClient(),
+			cache,
+			() => true,
+		);
+		const result = await hook({
+			toolName: "read",
+			isError: false,
+			content: [{ type: "text", text: "file content" }],
+			input: { path: "" },
+		});
+		expect(result).toBeUndefined();
+	});
+
 	test("GITNEXUS_PI_DEBUG=1 + failure → console.error called", async () => {
 		const originalDebug = process.env.GITNEXUS_PI_DEBUG;
 		process.env.GITNEXUS_PI_DEBUG = "1";

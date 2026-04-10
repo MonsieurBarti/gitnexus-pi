@@ -1,7 +1,7 @@
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import type { PiExec } from "../../../src/binary-resolver";
 import { createGitNexusIndexCommand } from "../../../src/commands/gitnexus-index";
 import { MESSAGES } from "../../../src/errors";
@@ -160,6 +160,73 @@ describe("createGitNexusIndexCommand", () => {
 		await cmd.handler("", ctx as any);
 		expect(notifications.some((n) => n.level === "error")).toBe(true);
 		expect(exec.calls).toHaveLength(0);
+	});
+
+	test("notifies 'added' when .gitignore exists but lacks .gitnexus/", async () => {
+		writeFileSync(join(repo, ".gitignore"), "node_modules/\n");
+		const exec = createFakePiExec([
+			{
+				match: (cmd, args) => args[0] === "analyze",
+				result: { stdout: "", stderr: "", code: 0 },
+			},
+		]);
+		const cmd = createGitNexusIndexCommand(exec, () => "/bin/gitnexus");
+		const { ctx, notifications } = createFakeCtx(repo);
+		// biome-ignore lint/suspicious/noExplicitAny: test-only ctx shape
+		await cmd.handler("", ctx as any);
+
+		expect(notifications[0].message).toBe(MESSAGES.gitignoreAdded);
+		const content = readFileSync(join(repo, ".gitignore"), "utf-8");
+		expect(content).toContain(".gitnexus/");
+	});
+
+	test("catch branch uses String(err) for non-Error thrown values", async () => {
+		const exec = createFakePiExec([]);
+		const cmd = createGitNexusIndexCommand(exec, () => {
+			throw "string-error-value";
+		});
+		const { ctx, notifications } = createFakeCtx(repo);
+		// biome-ignore lint/suspicious/noExplicitAny: test-only ctx shape
+		await cmd.handler("", ctx as any);
+		expect(
+			notifications.some((n) => n.level === "error" && n.message.includes("string-error-value")),
+		).toBe(true);
+	});
+
+	test("gitignore guard catch uses String(err) for non-GitignoreGuardError", async () => {
+		const guardModule = await import("../../../src/gitignore-guard");
+		const spy = vi.spyOn(guardModule, "ensureGitnexusIgnored").mockImplementation(() => {
+			throw "raw-string-thrown";
+		});
+		try {
+			const exec = createFakePiExec([]);
+			const cmd = createGitNexusIndexCommand(exec, () => "/bin/gitnexus");
+			const { ctx, notifications } = createFakeCtx(repo);
+			// biome-ignore lint/suspicious/noExplicitAny: test-only ctx shape
+			await cmd.handler("", ctx as any);
+			expect(
+				notifications.some((n) => n.level === "error" && n.message.includes("raw-string-thrown")),
+			).toBe(true);
+			expect(exec.calls).toHaveLength(0);
+		} finally {
+			spy.mockRestore();
+		}
+	});
+
+	test("indexing failed with null stderr uses empty string", async () => {
+		const exec = createFakePiExec([
+			{
+				match: (cmd, args) => args[0] === "analyze",
+				result: { stdout: "", stderr: null as unknown as string, code: 1 },
+			},
+		]);
+		const cmd = createGitNexusIndexCommand(exec, () => "/bin/gitnexus");
+		const { ctx, notifications } = createFakeCtx(repo);
+		// biome-ignore lint/suspicious/noExplicitAny: test-only ctx shape
+		await cmd.handler("", ctx as any);
+		// Should still notify error, just with empty stderr tail
+		expect(notifications.at(-1)?.level).toBe("error");
+		expect(notifications.at(-1)?.message).toContain("gitnexus analyze failed");
 	});
 
 	test("performs gitignore guard BEFORE exec'ing gitnexus", async () => {
