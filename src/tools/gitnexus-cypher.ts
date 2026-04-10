@@ -1,11 +1,6 @@
 import { Type } from "@sinclair/typebox";
 import { MESSAGES } from "../errors";
-import type { GitNexusMcpClient } from "../mcp-client";
-import type { ToolDefinition } from "./gitnexus-query";
-
-type ClientAccessor = () => Pick<GitNexusMcpClient, "callTool"> | null;
-type ToolCtx = { cwd: string };
-type ResolveRepo = (ctx: ToolCtx, override?: string) => string | null;
+import type { ClientAccessor, ResolveRepo, ToolCtx, ToolDefinition } from "./types";
 
 export function createGitNexusCypherTool(
 	client: ClientAccessor,

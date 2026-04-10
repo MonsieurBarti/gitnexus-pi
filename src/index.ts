@@ -103,10 +103,10 @@ export default function gitnexusExtension(pi: ExtensionAPI): void {
 		) => {
 			try {
 				augmentEnabled = !augmentEnabled;
-				ctx.ui.notify(augmentEnabled ? "GitNexus augment: on" : "GitNexus augment: off", "info");
+				ctx.ui.notify(augmentEnabled ? MESSAGES.augmentOn : MESSAGES.augmentOff, "info");
 			} catch (err) {
 				const msg = err instanceof Error ? err.message : String(err);
-				ctx.ui.notify(`gitnexus-toggle-augment failed: ${msg}`, "error");
+				ctx.ui.notify(MESSAGES.toggleFailed(msg), "error");
 			}
 		},
 	});

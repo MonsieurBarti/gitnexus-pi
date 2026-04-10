@@ -1,9 +1,6 @@
 import { Type } from "@sinclair/typebox";
 import { MESSAGES } from "../errors";
-import type { GitNexusMcpClient } from "../mcp-client";
-import type { ToolDefinition } from "./gitnexus-query";
-
-type ClientAccessor = () => Pick<GitNexusMcpClient, "callTool"> | null;
+import type { ClientAccessor, ToolDefinition } from "./types";
 
 export function createGitNexusListReposTool(client: ClientAccessor): ToolDefinition {
 	return {

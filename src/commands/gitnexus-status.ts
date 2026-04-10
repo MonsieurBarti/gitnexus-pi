@@ -1,4 +1,5 @@
 import type { AugmentCache } from "../augment-cache";
+import { MESSAGES } from "../errors";
 import type { GitNexusMcpClient } from "../mcp-client";
 import type { CommandDefinition } from "./gitnexus-index";
 
@@ -41,7 +42,7 @@ export function createGitNexusStatusCommand(deps: StatusCommandDeps): CommandDef
 				ctx.ui.notify(msg, "info");
 			} catch (err) {
 				const msg = err instanceof Error ? err.message : String(err);
-				ctx.ui.notify(`gitnexus-status failed: ${msg}`, "error");
+				ctx.ui.notify(MESSAGES.statusFailed(msg), "error");
 			}
 		},
 	};

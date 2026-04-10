@@ -392,7 +392,7 @@ describe("createAugmentGrepHook", () => {
 	});
 
 	test("GITNEXUS_PI_DEBUG=1 + failure → console.error called", async () => {
-		const originalDebug = process.env.GITNEXUS_PI_DEBUG;
+		const saved = process.env.GITNEXUS_PI_DEBUG;
 		process.env.GITNEXUS_PI_DEBUG = "1";
 		const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 		try {
@@ -408,7 +408,7 @@ describe("createAugmentGrepHook", () => {
 			await hook(grepEvent("a.ts:1:match"));
 			expect(errorSpy).toHaveBeenCalled();
 		} finally {
-			process.env.GITNEXUS_PI_DEBUG = originalDebug;
+			process.env.GITNEXUS_PI_DEBUG = saved;
 			errorSpy.mockRestore();
 		}
 	});
