@@ -38,6 +38,8 @@ export default function gitnexusExtension(pi: ExtensionAPI): void {
 	const cache = new AugmentCache();
 
 	const clientAccessor = () => client;
+	// DI seam: wrapping resolveRepoRoot lets tests inject a fake resolver
+	// into tool/command factories without touching the real module.
 	const resolveRepo = (ctx: { cwd: string }, override?: string) => resolveRepoRoot(ctx, override);
 
 	pi.on("session_start", async (...evArgs: unknown[]) => {

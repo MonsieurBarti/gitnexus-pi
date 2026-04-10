@@ -1,6 +1,11 @@
 import type { ChildProcess, SpawnOptions } from "node:child_process";
 import { spawn as nodeSpawn } from "node:child_process";
+import { createRequire } from "node:module";
 import { McpClientError } from "./errors";
+
+const { version: PACKAGE_VERSION } = createRequire(import.meta.url)("../package.json") as {
+	version: string;
+};
 
 export type SpawnFn = (command: string, args: string[], options: SpawnOptions) => ChildProcess;
 
@@ -73,7 +78,7 @@ export class GitNexusMcpClient {
 			await this.request("initialize", {
 				protocolVersion: PROTOCOL_VERSION,
 				capabilities: {},
-				clientInfo: { name: "gitnexus-pi", version: "0.1.0" },
+				clientInfo: { name: "gitnexus-pi", version: PACKAGE_VERSION },
 			});
 		} catch (err) {
 			this._dead = true;

@@ -76,9 +76,5 @@ describe("errors", () => {
 		test("MESSAGES.indexMissing is user-facing string", () => {
 			expect(MESSAGES.indexMissing).toContain("no index for this repo");
 		});
-
-		test("MESSAGES.augmentDisabled mentions toggle command", () => {
-			expect(MESSAGES.augmentDisabled).toContain("/gitnexus-toggle-augment");
-		});
 	});
 });

@@ -38,6 +38,8 @@ export function createGitNexusDetectChangesTool(
 			}
 			const args: Record<string, unknown> = { repo: resolved };
 			if (p.scope !== undefined) args.scope = p.scope;
+			// base_ref is forwarded unconditionally — the upstream MCP tool
+			// validates that it's only meaningful with scope='compare'.
 			if (p.base_ref !== undefined) args.base_ref = p.base_ref;
 			const content = await current.callTool("detect_changes", args, signal);
 			return {

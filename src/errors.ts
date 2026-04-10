@@ -41,8 +41,6 @@ export const MESSAGES = {
 	noIndexFound: `No .gitnexus/ index found for this directory. Run /gitnexus-index first. ${INSTALL_HINT}`,
 	indexMissing:
 		"GitNexus has no index for this repo — run /gitnexus-index to enable graph queries and auto-augment.",
-	augmentDisabled:
-		"GitNexus augment hook is disabled for this session (re-enable with /gitnexus-toggle-augment)",
 	augmentOn: "GitNexus augment: on",
 	augmentOff: "GitNexus augment: off",
 	toggleFailed: (msg: string) => `gitnexus-toggle-augment failed: ${msg}`,

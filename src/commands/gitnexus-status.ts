@@ -1,11 +1,10 @@
 import type { AugmentCache } from "../augment-cache";
 import { MESSAGES } from "../errors";
-import type { GitNexusMcpClient } from "../mcp-client";
 import type { CommandDefinition } from "./gitnexus-index";
 
 type StatusCommandDeps = {
 	binaryPath: () => string | null;
-	client: () => (Pick<GitNexusMcpClient, "callTool"> & { dead: boolean }) | null;
+	client: () => { dead: boolean } | null;
 	augmentEnabled: () => boolean;
 	cache: AugmentCache;
 	resolveRepo: (ctx: { cwd: string }, override?: string) => string | null;

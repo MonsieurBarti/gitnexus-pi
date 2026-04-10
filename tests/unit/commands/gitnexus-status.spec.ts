@@ -1,7 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { AugmentCache } from "../../../src/augment-cache";
 import { createGitNexusStatusCommand } from "../../../src/commands/gitnexus-status";
-import type { McpContentItem } from "../../../src/mcp-client";
 import { createFakeResolveRepo } from "../fakes/resolve-repo-fake";
 
 type Notification = { message: string; level: string };
@@ -25,11 +24,7 @@ function createFullDeps(
 	const cache = new AugmentCache();
 	return {
 		binaryPath: () => "/usr/bin/gitnexus" as string | null,
-		client: () =>
-			({ callTool: async () => [] as McpContentItem[], dead: false }) as {
-				callTool: (...args: unknown[]) => Promise<McpContentItem[]>;
-				dead: boolean;
-			} | null,
+		client: () => ({ dead: false }) as { dead: boolean } | null,
 		augmentEnabled: () => true,
 		cache,
 		resolveRepo: createFakeResolveRepo("/repo"),
@@ -76,7 +71,7 @@ describe("createGitNexusStatusCommand", () => {
 
 	test("client dead → formats 'dead'", async () => {
 		const deps = createFullDeps({
-			client: () => ({ callTool: async () => [], dead: true }),
+			client: () => ({ dead: true }),
 		});
 		const cmd = createGitNexusStatusCommand(deps);
 		const { ctx, notifications } = createFakeCtx();

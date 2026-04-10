@@ -19,6 +19,9 @@ const MAX_PATHS = 3;
 const PER_PATH_LIMIT = 3;
 const AUGMENT_TIMEOUT_MS = 2000;
 const GREP_PATTERN = /^([^\s:]+):\d+:/;
+// Intentionally permissive: every non-empty line is treated as a path.
+// find output is line-per-path; error/info lines may slip through but
+// MAX_PATHS caps exposure and MCP query failures are silently recorded.
 const FIND_PATTERN = /^(.+)$/;
 const HOOKED_TOOLS = new Set(["grep", "find", "read"]);
 
