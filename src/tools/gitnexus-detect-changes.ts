@@ -1,15 +1,8 @@
-import { type TUnsafe, Type } from "@sinclair/typebox";
+import { Type } from "@sinclair/typebox";
 import { MESSAGES } from "../errors";
-import type { GitNexusMcpClient, McpContentItem } from "../mcp-client";
+import type { GitNexusMcpClient } from "../mcp-client";
 import type { ToolDefinition } from "./gitnexus-query";
-
-/**
- * Mirrors `StringEnum` from `@mariozechner/pi-ai/utils/typebox-helpers` which
- * is not reachable via subpath exports at test time.
- */
-function StringEnum(values: string[], options?: { description?: string; default?: string }) {
-	return Type.Unsafe<string>({ type: "string", enum: values, ...options });
-}
+import { StringEnum } from "./typebox-utils";
 
 type ClientAccessor = () => Pick<GitNexusMcpClient, "callTool"> | null;
 type ToolCtx = { cwd: string };

@@ -1,6 +1,6 @@
 import { Type } from "@sinclair/typebox";
 import { MESSAGES } from "../errors";
-import type { GitNexusMcpClient, McpContentItem } from "../mcp-client";
+import type { GitNexusMcpClient } from "../mcp-client";
 import type { ToolDefinition } from "./gitnexus-query";
 
 type ClientAccessor = () => Pick<GitNexusMcpClient, "callTool"> | null;

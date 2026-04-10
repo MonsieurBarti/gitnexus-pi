@@ -1,21 +1,8 @@
 import { Type } from "@sinclair/typebox";
 import { MESSAGES } from "../errors";
-import type { GitNexusMcpClient, McpContentItem } from "../mcp-client";
+import type { GitNexusMcpClient } from "../mcp-client";
 import type { ToolDefinition } from "./gitnexus-query";
-
-/**
- * Creates a string enum schema compatible with Google's API (no anyOf/const).
- * Mirrors `StringEnum` from `@mariozechner/pi-ai/utils/typebox-helpers` which
- * is not exported from the package's public exports map.
- */
-function StringEnum(values: string[], options?: { description?: string; default?: string }) {
-	return Type.Unsafe<string>({
-		type: "string",
-		enum: values,
-		...(options?.description && { description: options.description }),
-		...(options?.default && { default: options.default }),
-	});
-}
+import { StringEnum } from "./typebox-utils";
 
 type ClientAccessor = () => Pick<GitNexusMcpClient, "callTool"> | null;
 type ToolCtx = { cwd: string };
