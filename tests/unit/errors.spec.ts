@@ -67,5 +67,18 @@ describe("errors", () => {
 			);
 			expect(MESSAGES.initFailed("boom")).toBe("GitNexus init failed: boom");
 		});
+
+		test("MESSAGES.noIndexFound includes install hint", () => {
+			expect(MESSAGES.noIndexFound).toContain("No .gitnexus/ index found");
+			expect(MESSAGES.noIndexFound).toContain(INSTALL_HINT);
+		});
+
+		test("MESSAGES.indexMissing is user-facing string", () => {
+			expect(MESSAGES.indexMissing).toContain("no index for this repo");
+		});
+
+		test("MESSAGES.augmentDisabled mentions toggle command", () => {
+			expect(MESSAGES.augmentDisabled).toContain("/gitnexus-toggle-augment");
+		});
 	});
 });

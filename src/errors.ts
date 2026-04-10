@@ -38,4 +38,9 @@ export const MESSAGES = {
 	indexReady: (repoRoot: string) => `GitNexus index ready: ${repoRoot}`,
 	extensionReady: (binaryPath: string) => `GitNexus ready (${binaryPath})`,
 	initFailed: (msg: string) => `GitNexus init failed: ${msg}`,
+	noIndexFound: `No .gitnexus/ index found for this directory. Run /gitnexus-index first. ${INSTALL_HINT}`,
+	indexMissing:
+		"GitNexus has no index for this repo — run /gitnexus-index to enable graph queries and auto-augment.",
+	augmentDisabled:
+		"GitNexus augment hook is disabled for this session (re-enable with /gitnexus-toggle-augment)",
 } as const;
