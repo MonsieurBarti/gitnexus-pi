@@ -15,6 +15,7 @@ import { createGitNexusDetectChangesTool } from "./tools/gitnexus-detect-changes
 import { createGitNexusImpactTool } from "./tools/gitnexus-impact";
 import { createGitNexusListReposTool } from "./tools/gitnexus-list-repos";
 import { createGitNexusQueryTool } from "./tools/gitnexus-query";
+import { checkForUpdates } from "./update-check.js";
 
 type ExtensionAPI = {
 	exec: PiExec;
@@ -56,6 +57,15 @@ export default function gitnexusExtension(pi: ExtensionAPI): void {
 			const maybeRepo = resolveRepoRoot({ cwd: ctx.cwd });
 			if (maybeRepo === null && hasGitDir(ctx.cwd)) {
 				ctx.ui.notify(MESSAGES.indexMissing, "info");
+			}
+
+			// Check for extension updates
+			const updateInfo = await checkForUpdates(pi);
+			if (updateInfo?.updateAvailable) {
+				ctx.ui.notify(
+					`📦 Update available: ${updateInfo.latestVersion} (you have ${updateInfo.currentVersion}). Run: pi install npm:@the-forge-flow/gitnexus-pi`,
+					"info",
+				);
 			}
 		} catch (err) {
 			if (err instanceof BinaryNotFoundError) {
