@@ -8,9 +8,10 @@ export function createGitNexusCypherTool(
 ): ToolDefinition {
 	return {
 		name: "tff-gitnexus_cypher",
+		readOnly: true,
 		label: "GitNexus Cypher",
 		description:
-			"Execute a raw Cypher query against the GitNexus knowledge graph. Read gitnexus://repo/{name}/schema first to understand the schema.",
+			"Execute a raw Cypher query against the GitNexus knowledge graph. Read gitnexus://repo/{name}/schema first to understand the schema. Read-only — safe to call in parallel with other read-only tools.",
 		parameters: Type.Object({
 			query: Type.String({ description: "Cypher query to execute" }),
 			repo: Type.Optional(

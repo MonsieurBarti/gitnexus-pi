@@ -9,9 +9,10 @@ export function createGitNexusImpactTool(
 ): ToolDefinition {
 	return {
 		name: "tff-gitnexus_impact",
+		readOnly: true,
 		label: "GitNexus Impact",
 		description:
-			"Analyze blast radius of proposed changes to a symbol. Returns upstream callers or downstream callees with depth and risk indicators.",
+			"Analyze blast radius of proposed changes to a symbol. Returns upstream callers or downstream callees with depth and risk indicators. Read-only — safe to call in parallel with other read-only tools.",
 		parameters: Type.Object({
 			target: Type.String({ description: "Symbol name to analyze impact for" }),
 			direction: StringEnum(["upstream", "downstream"], {

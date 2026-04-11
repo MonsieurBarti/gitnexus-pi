@@ -8,9 +8,10 @@ export function createGitNexusContextTool(
 ): ToolDefinition {
 	return {
 		name: "tff-gitnexus_context",
+		readOnly: true,
 		label: "GitNexus Context",
 		description:
-			"Get a 360° view of a symbol: callers, callees, cluster membership, file location, and execution flow participation. Provide either name or uid.",
+			"Get a 360° view of a symbol: callers, callees, cluster membership, file location, and execution flow participation. Provide either name or uid. Read-only — safe to call in parallel with other read-only tools.",
 		parameters: Type.Object({
 			name: Type.Optional(Type.String({ description: "Symbol name to look up" })),
 			uid: Type.Optional(Type.String({ description: "Unique graph identifier for the symbol" })),
