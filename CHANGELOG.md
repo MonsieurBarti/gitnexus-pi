@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.4](https://github.com/MonsieurBarti/gitnexus-pi/compare/gitnexus-pi-v0.1.3...gitnexus-pi-v0.1.4) (2026-04-11)
+
+
+### Features
+
+* add update notification on session_start ([31dfc21](https://github.com/MonsieurBarti/gitnexus-pi/commit/31dfc214136f6ffdba67cdcfe9ae0b502a56c36a))
+* add update notification on session_start ([17ce2f0](https://github.com/MonsieurBarti/gitnexus-pi/commit/17ce2f0ff8359ef3d5c383adee3df152fdebc33f))
+
 ## [0.1.3](https://github.com/MonsieurBarti/gitnexus-pi/compare/gitnexus-pi-v0.1.2...gitnexus-pi-v0.1.3) (2026-04-11)
 
 
