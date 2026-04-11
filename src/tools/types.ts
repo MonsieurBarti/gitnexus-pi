@@ -9,6 +9,7 @@ import type { GitNexusMcpClient, McpContentItem } from "../mcp-client";
  */
 export type ToolDefinition = {
 	name: string;
+	readOnly?: boolean;
 	label: string;
 	description: string;
 	parameters: ReturnType<typeof Type.Object>;

@@ -9,9 +9,10 @@ export function createGitNexusDetectChangesTool(
 ): ToolDefinition {
 	return {
 		name: "tff-gitnexus_detect_changes",
+		readOnly: true,
 		label: "GitNexus Detect Changes",
 		description:
-			"Detect which symbols and execution flows are affected by the current git diff. Use before committing to verify scope.",
+			"Detect which symbols and execution flows are affected by the current git diff. Use before committing to verify scope. Read-only — safe to call in parallel with other read-only tools.",
 		parameters: Type.Object({
 			scope: Type.Optional(
 				StringEnum(["unstaged", "staged", "all", "compare"], {

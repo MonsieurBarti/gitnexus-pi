@@ -8,9 +8,10 @@ export function createGitNexusQueryTool(
 ): ToolDefinition {
 	return {
 		name: "tff-gitnexus_query",
+		readOnly: true,
 		label: "GitNexus Query",
 		description:
-			"Search the GitNexus code knowledge graph for symbols, files, or concepts. Returns structural context (file, kind, cluster, callers) for matches.",
+			"Search the GitNexus code knowledge graph for symbols, files, or concepts. Returns structural context (file, kind, cluster, callers) for matches. Read-only — safe to call in parallel with other read-only tools.",
 		parameters: Type.Object({
 			query: Type.String({
 				description:
