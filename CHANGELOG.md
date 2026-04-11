@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.3](https://github.com/MonsieurBarti/gitnexus-pi/compare/gitnexus-pi-v0.1.2...gitnexus-pi-v0.1.3) (2026-04-11)
+
+
+### Features
+
+* add read-only classification to tool definitions ([da31ded](https://github.com/MonsieurBarti/gitnexus-pi/commit/da31ded773aeacb89a825391ad3341b7fb7fded5))
+* add readOnly classification to tool definitions ([264fc75](https://github.com/MonsieurBarti/gitnexus-pi/commit/264fc758fdccfed6ba71387f7441dbe2862715d6))
+
 ## [0.1.2](https://github.com/MonsieurBarti/gitnexus-pi/compare/gitnexus-pi-v0.1.1...gitnexus-pi-v0.1.2) (2026-04-10)
 
 
