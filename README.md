@@ -7,6 +7,8 @@
     <strong>Native GitNexus code-intelligence for the PI coding agent</strong>
   </p>
   
+  <!-- Trigger release-please -->
+  
   <p>
     <a href="https://github.com/MonsieurBarti/gitnexus-pi/actions/workflows/ci.yml">
       <img src="https://img.shields.io/github/actions/workflow/status/MonsieurBarti/gitnexus-pi/ci.yml?label=CI&style=flat-square" alt="CI Status">
