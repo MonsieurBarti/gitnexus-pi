@@ -18,27 +18,24 @@ allowed-tools: tff-gitnexus_impact tff-gitnexus_context tff-gitnexus_query
 | D2  | depth-2 dependents (LIKELY AFFECTED — indirect) |
 | P   | execution processes containing T |
 
-## Phase 1 — Resolve target
+## O_scope
 
-1. `tff-gitnexus_query({ query: T })` → confirm T exists, get file + cluster
-2. `tff-gitnexus_context({ name: T })` → full 360° view: callers, callees, cluster, processes
+O_resolve {
+  1. `tff-gitnexus_query({ query: T })` → confirm T exists, get file + cluster;
+  2. `tff-gitnexus_context({ name: T })` → 360° view: callers, callees, cluster, processes;
+} → {T, file, cluster, P}.
 
-## Phase 2 — Blast radius
+O_blast {
+  3. `tff-gitnexus_impact({ target: T, direction: "upstream" })` → {D1, D2} callers;
+  4. `tff-gitnexus_impact({ target: T, direction: "downstream" })` → callees;
+} → {D1, D2, callees}.
 
-3. `tff-gitnexus_impact({ target: T, direction: "upstream" })` → D1, D2 callers
-4. `tff-gitnexus_impact({ target: T, direction: "downstream" })` → callees that may need updating
-
-## Phase 3 — Report
-
-5. Present structured report:
-   - **Target**: T, file, cluster
-   - **D1 (WILL BREAK)**: list each with file — these MUST be updated
-   - **D2 (LIKELY AFFECTED)**: list — should test
-   - **Processes**: P — execution flows to verify end-to-end
-   - **Risk**: HIGH if D1 > 5 or crosses cluster boundaries
+O_report {
+  5. Output: T, file, cluster; D1 → MUST update; D2 → test; P → verify; risk ∈ {HIGH, LOW};
+} → report.
 
 ## Rules
 
-- R1: Never proceed to code changes without completing Phase 2
-- R2: If risk is HIGH, warn user before any modifications
-- R3: After refactor, run `tff-gitnexus_detect_changes()` to verify scope matches report
+R1: ¬complete(O_blast) → ¬proceed.
+R2: risk = HIGH → warn ∧ ¬modify.
+R3: post_refactor → `tff-gitnexus_detect_changes()` → verify_scope.
