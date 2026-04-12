@@ -1,6 +1,6 @@
 {
 	"name": "@the-forge-flow/gitnexus-pi",
-	"version": "0.1.4",
+	"version": "0.1.5",
 	"description": "PI extension for native GitNexus code-intelligence integration",
 	"type": "module",
 	"main": "dist/index.js",
