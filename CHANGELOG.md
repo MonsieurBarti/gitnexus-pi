@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.5](https://github.com/MonsieurBarti/gitnexus-pi/compare/gitnexus-pi-v0.1.4...gitnexus-pi-v0.1.5) (2026-04-12)
+
+
+### Bug Fixes
+
+* add refactor commit type to release-please config ([38aa6a9](https://github.com/MonsieurBarti/gitnexus-pi/commit/38aa6a9f6b0c95378361c96065277309e5d235c7))
+
+
+### Refactors
+
+* compress skill files to symbolic notation ([f5cdbed](https://github.com/MonsieurBarti/gitnexus-pi/commit/f5cdbedbad5290f7ff22cb576555a4aacae668f8))
+* **skills:** compress skill files to symbolic notation ([09a8b27](https://github.com/MonsieurBarti/gitnexus-pi/commit/09a8b275071e698807ff37650cd29757d6a0d215))
+* **skills:** compress to symbolic notation ([7dbb548](https://github.com/MonsieurBarti/gitnexus-pi/commit/7dbb54874c620c40a277779bc3be3297dc006248))
+
 ## [0.1.4](https://github.com/MonsieurBarti/gitnexus-pi/compare/gitnexus-pi-v0.1.3...gitnexus-pi-v0.1.4) (2026-04-11)
 
 
