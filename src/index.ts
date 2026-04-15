@@ -48,34 +48,38 @@ export default function gitnexusExtension(pi: ExtensionAPI): void {
 			cwd: string;
 			ui: { notify: (msg: string, level: "info" | "warning" | "error") => void };
 		};
-		try {
-			binaryPath = await resolveBinary(pi.exec.bind(pi) as PiExec, process.env);
-			client = new GitNexusMcpClient(binaryPath, ctx.cwd);
-			await client.start();
-			ctx.ui.notify(MESSAGES.extensionReady(binaryPath), "info");
+		// Fire-and-forget MCP client init — don't block session start
+		void (async () => {
+			try {
+				binaryPath = await resolveBinary(pi.exec.bind(pi) as PiExec, process.env);
+				client = new GitNexusMcpClient(binaryPath, ctx.cwd);
+				await client.start();
+				ctx.ui.notify(MESSAGES.extensionReady(binaryPath), "info");
 
-			const maybeRepo = resolveRepoRoot({ cwd: ctx.cwd });
-			if (maybeRepo === null && hasGitDir(ctx.cwd)) {
-				ctx.ui.notify(MESSAGES.indexMissing, "info");
+				const maybeRepo = resolveRepoRoot({ cwd: ctx.cwd });
+				if (maybeRepo === null && hasGitDir(ctx.cwd)) {
+					ctx.ui.notify(MESSAGES.indexMissing, "info");
+				}
+			} catch (err) {
+				if (err instanceof BinaryNotFoundError) {
+					ctx.ui.notify(MESSAGES.binaryNotFound, "warning");
+				} else {
+					const msg = err instanceof Error ? err.message : String(err);
+					ctx.ui.notify(MESSAGES.initFailed(msg), "warning");
+				}
+				client = null;
 			}
+		})();
 
-			// Check for extension updates
-			const updateInfo = await checkForUpdates(pi);
-			if (updateInfo?.updateAvailable) {
+		// Check for extension updates (non-blocking)
+		void checkForUpdates(pi).then((info) => {
+			if (info?.updateAvailable) {
 				ctx.ui.notify(
-					`📦 Update available: ${updateInfo.latestVersion} (you have ${updateInfo.currentVersion}). Run: pi install npm:@the-forge-flow/gitnexus-pi`,
+					`📦 Update available: ${info.latestVersion} (you have ${info.currentVersion}). Run: pi install npm:@the-forge-flow/gitnexus-pi`,
 					"info",
 				);
 			}
-		} catch (err) {
-			if (err instanceof BinaryNotFoundError) {
-				ctx.ui.notify(MESSAGES.binaryNotFound, "warning");
-			} else {
-				const msg = err instanceof Error ? err.message : String(err);
-				ctx.ui.notify(MESSAGES.initFailed(msg), "warning");
-			}
-			client = null;
-		}
+		});
 	});
 
 	pi.on("session_shutdown", async () => {

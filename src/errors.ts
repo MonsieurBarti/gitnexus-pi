@@ -30,7 +30,8 @@ export const INSTALL_HINT = "Install: npm i -g gitnexus";
 export const MESSAGES = {
 	binaryNotFound: `gitnexus binary not found on PATH. ${INSTALL_HINT}`,
 	binaryNotFoundForCommand: `gitnexus not installed — cannot run index. ${INSTALL_HINT}`,
-	clientNotAvailable: `gitnexus not available: binary not found or MCP client failed to start. ${INSTALL_HINT}`,
+	clientNotAvailable:
+		"GitNexus not ready yet (still initializing) or failed to start. Wait a moment and retry, or check: npm i -g gitnexus",
 	indexingFailed: (stderrTail: string) => `gitnexus analyze failed:\n${stderrTail}`,
 	indexingCancelled: "gitnexus analyze cancelled",
 	gitignoreCreated: "Created .gitignore with .pi/.gitnexus/",
