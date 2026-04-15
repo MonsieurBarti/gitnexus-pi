@@ -23,29 +23,46 @@ describe("ensureGitnexusIgnored", () => {
 
 	const read = () => readFileSync(join(repo, ".gitignore"), "utf-8");
 
-	test("creates .gitignore with .gitnexus/ when file absent", () => {
+	test("creates .gitignore with .pi/.gitnexus/ when file absent", () => {
 		expect(ensureGitnexusIgnored(repo)).toBe("created");
-		expect(read()).toBe(".gitnexus/\n");
+		expect(read()).toBe(".pi/.gitnexus/\n");
 	});
 
-	test("appends .gitnexus/ to existing empty file", () => {
+	test("appends .pi/.gitnexus/ to existing empty file", () => {
 		writeFileSync(join(repo, ".gitignore"), "");
 		expect(ensureGitnexusIgnored(repo)).toBe("added");
-		expect(read()).toBe(".gitnexus/\n");
+		expect(read()).toBe(".pi/.gitnexus/\n");
 	});
 
-	test("appends .gitnexus/ preserving existing lines", () => {
+	test("appends .pi/.gitnexus/ preserving existing lines", () => {
 		writeFileSync(join(repo, ".gitignore"), "node_modules\ndist\n");
 		expect(ensureGitnexusIgnored(repo)).toBe("added");
-		expect(read()).toBe("node_modules\ndist\n.gitnexus/\n");
+		expect(read()).toBe("node_modules\ndist\n.pi/.gitnexus/\n");
 	});
 
 	test("prepends newline when existing file lacks trailing newline", () => {
 		writeFileSync(join(repo, ".gitignore"), "node_modules");
 		expect(ensureGitnexusIgnored(repo)).toBe("added");
-		expect(read()).toBe("node_modules\n.gitnexus/\n");
+		expect(read()).toBe("node_modules\n.pi/.gitnexus/\n");
 	});
 
+	// Test new preferred location variants
+	for (const variant of [
+		".pi/.gitnexus",
+		".pi/.gitnexus/",
+		"/.pi/.gitnexus",
+		"/.pi/.gitnexus/",
+		"**/.pi/.gitnexus",
+		"**/.pi/.gitnexus/",
+	]) {
+		test(`detects existing preferred variant "${variant}" as already-present`, () => {
+			writeFileSync(join(repo, ".gitignore"), `${variant}\n`);
+			expect(ensureGitnexusIgnored(repo)).toBe("already-present");
+			expect(read()).toBe(`${variant}\n`);
+		});
+	}
+
+	// Test legacy variants (still detected for backwards compatibility)
 	for (const variant of [
 		".gitnexus",
 		".gitnexus/",
@@ -54,7 +71,16 @@ describe("ensureGitnexusIgnored", () => {
 		"**/.gitnexus",
 		"**/.gitnexus/",
 	]) {
-		test(`detects existing variant "${variant}" as already-present`, () => {
+		test(`detects existing legacy variant "${variant}" as already-present`, () => {
+			writeFileSync(join(repo, ".gitignore"), `${variant}\n`);
+			expect(ensureGitnexusIgnored(repo)).toBe("already-present");
+			expect(read()).toBe(`${variant}\n`);
+		});
+	}
+
+	// Test .pi/ coverage patterns (no need to add .pi/.gitnexus/ if these exist)
+	for (const variant of [".pi", ".pi/", "/.pi", "/.pi/", "**/.pi", "**/.pi/"]) {
+		test(`detects existing .pi coverage pattern "${variant}" as already-present`, () => {
 			writeFileSync(join(repo, ".gitignore"), `${variant}\n`);
 			expect(ensureGitnexusIgnored(repo)).toBe("already-present");
 			expect(read()).toBe(`${variant}\n`);
@@ -64,12 +90,12 @@ describe("ensureGitnexusIgnored", () => {
 	test("ignores comment-only occurrences and appends", () => {
 		writeFileSync(join(repo, ".gitignore"), "# .gitnexus/ used by gitnexus\n");
 		expect(ensureGitnexusIgnored(repo)).toBe("added");
-		expect(read()).toBe("# .gitnexus/ used by gitnexus\n.gitnexus/\n");
+		expect(read()).toBe("# .gitnexus/ used by gitnexus\n.pi/.gitnexus/\n");
 	});
 
 	test("ignores lines with leading whitespace but same content", () => {
-		// Whitespace-trimmed matching: "   .gitnexus/" is still a match.
-		writeFileSync(join(repo, ".gitignore"), "   .gitnexus/  \n");
+		// Whitespace-trimmed matching: "   .pi/.gitnexus/" is still a match.
+		writeFileSync(join(repo, ".gitignore"), "   .pi/.gitnexus/  \n");
 		expect(ensureGitnexusIgnored(repo)).toBe("already-present");
 	});
 
