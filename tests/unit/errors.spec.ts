@@ -54,8 +54,8 @@ describe("errors", () => {
 			expect(MESSAGES.binaryNotFound).toContain(INSTALL_HINT);
 			expect(MESSAGES.binaryNotFoundForCommand).toContain("not installed");
 			expect(MESSAGES.clientNotAvailable).toContain("gitnexus");
-			expect(MESSAGES.gitignoreCreated).toBe("Created .gitignore with .gitnexus/");
-			expect(MESSAGES.gitignoreAdded).toBe("Added .gitnexus/ to .gitignore");
+			expect(MESSAGES.gitignoreCreated).toBe("Created .gitignore with .pi/.gitnexus/");
+			expect(MESSAGES.gitignoreAdded).toBe("Added .pi/.gitnexus/ to .gitignore");
 			expect(MESSAGES.indexingCancelled).toBe("gitnexus analyze cancelled");
 		});
 
@@ -69,7 +69,7 @@ describe("errors", () => {
 		});
 
 		test("MESSAGES.noIndexFound includes install hint", () => {
-			expect(MESSAGES.noIndexFound).toContain("No .gitnexus/ index found");
+			expect(MESSAGES.noIndexFound).toContain("No .pi/.gitnexus/ index found");
 			expect(MESSAGES.noIndexFound).toContain(INSTALL_HINT);
 		});
 

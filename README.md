@@ -33,7 +33,7 @@ PI extension that integrates [GitNexus](https://github.com/abhigyanpatwari/GitNe
 ## Features
 
 - `tff-gitnexus_query` — LLM-callable symbol/file/concept search over the GitNexus knowledge graph
-- `/gitnexus-index` — one-shot command that ensures `.gitnexus/` is gitignored and runs `gitnexus analyze` on the current repo
+- `/gitnexus-index` — one-shot command that ensures `.pi/.gitnexus/` is gitignored and runs `gitnexus analyze` on the current repo
 - **Auto-augment hook** — enriches PI's `grep` results with a GitNexus context block (enabled by default, per-session dedup cache)
 - Persistent `gitnexus mcp` child process owned by the extension — single handshake, fast repeated tool calls
 - Graceful degradation when `gitnexus` is not installed — notify once, tools return install hint
@@ -75,7 +75,7 @@ Optional arguments:
 
 ### Commands
 
-- `/gitnexus-index` — runs `gitnexus analyze` in the current directory. Adds `.gitnexus/` to `.gitignore` if missing.
+- `/gitnexus-index` — runs `gitnexus analyze` in the current directory. Adds `.pi/.gitnexus/` to `.gitignore` if missing.
 - `/gitnexus-index /path/to/other/repo` — index a different directory.
 
 ### Auto-augmentation
@@ -131,8 +131,8 @@ Key components in `src/`:
 | `src/tools/gitnexus-query.ts` | `tff-gitnexus_query` tool definition |
 | `src/commands/gitnexus-index.ts` | `/gitnexus-index` handler with `.gitignore` guard |
 | `src/hooks/augment-grep.ts` | `tool_result` middleware enriching grep output |
-| `src/gitignore-guard.ts` | Detect/add `.gitnexus/` to `.gitignore` |
-| `src/repo-discovery.ts` | Walk up from cwd looking for `.gitnexus/` |
+| `src/gitignore-guard.ts` | Detect/add `.pi/.gitnexus/` to `.gitignore` |
+| `src/repo-discovery.ts` | Walk up from cwd looking for `.pi/.gitnexus/` (preferred) or `.gitnexus/` (legacy) |
 | `src/augment-cache.ts` | Per-session dedup set for the hook |
 | `src/errors.ts` | Error classes + user-facing message catalog |
 

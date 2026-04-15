@@ -47,7 +47,7 @@ describe("createGitNexusIndexCommand", () => {
 		// biome-ignore lint/suspicious/noExplicitAny: test-only ctx shape
 		await cmd.handler("", ctx as any);
 
-		expect(readFileSync(join(repo, ".gitignore"), "utf-8")).toBe(".gitnexus/\n");
+		expect(readFileSync(join(repo, ".gitignore"), "utf-8")).toBe(".pi/.gitnexus/\n");
 		expect(notifications[0].message).toBe(MESSAGES.gitignoreCreated);
 		expect(exec.calls[0]).toEqual({
 			cmd: "/bin/gitnexus",
@@ -57,7 +57,7 @@ describe("createGitNexusIndexCommand", () => {
 	});
 
 	test("silent on gitignore when already present", async () => {
-		writeFileSync(join(repo, ".gitignore"), ".gitnexus/\n");
+		writeFileSync(join(repo, ".gitignore"), ".pi/.gitnexus/\n");
 		const exec = createFakePiExec([
 			{
 				match: () => true,
@@ -127,7 +127,7 @@ describe("createGitNexusIndexCommand", () => {
 			const { ctx } = createFakeCtx(repo);
 			// biome-ignore lint/suspicious/noExplicitAny: test-only ctx shape
 			await cmd.handler(customRoot, ctx as any);
-			expect(readFileSync(join(customRoot, ".gitignore"), "utf-8")).toBe(".gitnexus/\n");
+			expect(readFileSync(join(customRoot, ".gitignore"), "utf-8")).toBe(".pi/.gitnexus/\n");
 		} finally {
 			rmSync(customRoot, { recursive: true, force: true });
 		}
@@ -177,7 +177,7 @@ describe("createGitNexusIndexCommand", () => {
 
 		expect(notifications[0].message).toBe(MESSAGES.gitignoreAdded);
 		const content = readFileSync(join(repo, ".gitignore"), "utf-8");
-		expect(content).toContain(".gitnexus/");
+		expect(content).toContain(".pi/.gitnexus/");
 	});
 
 	test("catch branch uses String(err) for non-Error thrown values", async () => {
