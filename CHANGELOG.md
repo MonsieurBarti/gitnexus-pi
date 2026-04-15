@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.6](https://github.com/MonsieurBarti/gitnexus-pi/compare/gitnexus-pi-v0.1.5...gitnexus-pi-v0.1.6) (2026-04-15)
+
+
+### Features
+
+* store .gitnexus in .pi/.gitnexus for cleaner project structure ([74ed940](https://github.com/MonsieurBarti/gitnexus-pi/commit/74ed940f79e45b0bad290f863fc5f09025c8d177))
+* store .gitnexus in .pi/.gitnexus for cleaner project structure ([b0bf040](https://github.com/MonsieurBarti/gitnexus-pi/commit/b0bf0403397085a5a79664eb718cccbdf6d7144e))
+
 ## [0.1.5](https://github.com/MonsieurBarti/gitnexus-pi/compare/gitnexus-pi-v0.1.4...gitnexus-pi-v0.1.5) (2026-04-12)
 
 
