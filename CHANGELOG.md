@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.7](https://github.com/MonsieurBarti/gitnexus-pi/compare/gitnexus-pi-v0.1.6...gitnexus-pi-v0.1.7) (2026-04-15)
+
+
+### Features
+
+* make MCP client and update checks non-blocking ([2fbbb35](https://github.com/MonsieurBarti/gitnexus-pi/commit/2fbbb356d2c645ed5464e9523fd7b26d4feb0d47))
+* make MCP client and update checks non-blocking ([0511145](https://github.com/MonsieurBarti/gitnexus-pi/commit/0511145ea02d7603be870b1d6673cdca21a9797a))
+
 ## [0.1.6](https://github.com/MonsieurBarti/gitnexus-pi/compare/gitnexus-pi-v0.1.5...gitnexus-pi-v0.1.6) (2026-04-15)
 
 
